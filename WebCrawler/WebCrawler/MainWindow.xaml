@@ -1,12 +1,64 @@
-﻿<Window x:Class="WebCrawler.MainWindow"
+﻿<Fluent:RibbonWindow x:Class="WebCrawler.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WebCrawler"
+        xmlns:Fluent="urn:fluent-ribbon"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Fluent:Ribbon Grid.Row="0" Background="Red">
+            <!--Backstage-->
+            <Fluent:Ribbon.Menu>
+                <Fluent:Backstage>
+                    <Fluent:BackstageTabControl>
+                        <Fluent:BackstageTabItem Header="New"/>
+                        <Fluent:BackstageTabItem Header="Print"/>
+                    </Fluent:BackstageTabControl>
+                </Fluent:Backstage>
+            </Fluent:Ribbon.Menu>
+
+            <!--Tabs-->
+            <Fluent:RibbonTabItem Header="Home">
+                
+            </Fluent:RibbonTabItem>
+            <Fluent:RibbonTabItem Header="History">
+                
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,0">
+                <TextBox Grid.Row="0" Width="500"
+                         Text="{Binding URL,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Row="0" Content="  Craw  "
+                        HorizontalAlignment="Right"
+                        Margin="10,0,0,0" 
+                        Command="{Binding Craw}"/>
+                <Button Grid.Row="0" Content="  Cancel  "
+                        HorizontalAlignment="Right"
+                        Margin="10,0,0,0" 
+                        Command="{Binding Cancel}"/>
+            </StackPanel>
+            <TextBlock Text="{Binding TagCount}"
+                       Grid.Row="1" HorizontalAlignment="Center"/>
+            <ListBox ItemsSource="{Binding Data}"
+                     Grid.Row="2"/>
+        </Grid>
     </Grid>
-</Window>
+</Fluent:RibbonWindow>

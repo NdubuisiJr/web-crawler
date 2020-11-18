@@ -17,9 +17,10 @@ namespace WebCrawler {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Fluent.RibbonWindow {
         public MainWindow() {
             InitializeComponent();
+            DataContext = new MainwindowViewModel();
         }
     }
 }

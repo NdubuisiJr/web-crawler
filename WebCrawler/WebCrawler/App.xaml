@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:WebCrawler"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
-    </Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/Light.Green.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary></Application.Resources>
 </Application>
