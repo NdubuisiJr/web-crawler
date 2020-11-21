@@ -2,6 +2,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
@@ -45,7 +46,6 @@ namespace WebCrawler {
                 using (var httpClient = new HttpClient()) {
                     var html = await httpClient.GetStringAsync(URL);
                     var htmlDoc = new HtmlDocument();
-
                     htmlDoc.LoadHtml(html);
                     var body = htmlDoc.DocumentNode.Descendants("body").First();
                     ExtractData(body, progress, countProgress, _tokenSource.Token);
@@ -69,12 +69,12 @@ namespace WebCrawler {
             }
 
             if (tag.Name.Contains("a")) {
-                progress.Report("EXTRACTOR = " + _anchorExtractor.Extract(tag.OuterHtml));
+                progress.Report("EXTRACTOR = " + _anchorExtractor.Extract(tag));
             };
 
-            Thread.Sleep(100);
-
-            progress.Report($"{tag.InnerText.Replace('\n', ' ')}");
+            Thread.Sleep(5);
+            if(!string.IsNullOrWhiteSpace(tag.InnerText))
+                progress.Report($"{tag.InnerText.Replace('\n', ' ')}");
             countProgress.Report(count++);
         }
 

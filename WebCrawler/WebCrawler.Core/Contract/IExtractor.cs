@@ -1,5 +1,7 @@
-﻿namespace WebCrawler.Core.Contract {
+﻿using HtmlAgilityPack;
+
+namespace WebCrawler.Core.Contract {
     public interface IExtractor {
-        string Extract(string outHtml);
+        string Extract(HtmlNode htmlNode);
     }
 }
