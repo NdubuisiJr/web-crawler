@@ -8,6 +8,13 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Fluent:RibbonWindow.Resources>
+        <Style TargetType="TextBlock" x:Key="Header">
+            <Setter Property="Margin" Value="10,-20,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+    </Fluent:RibbonWindow.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -57,8 +64,53 @@
             </StackPanel>
             <TextBlock Text="{Binding TagCount}"
                        Grid.Row="1" HorizontalAlignment="Center"/>
-            <ListBox ItemsSource="{Binding Data}"
-                     Grid.Row="2"/>
+            <Grid Grid.Row="2" Margin="10,40,10,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ListBox ItemsSource="{Binding Texts}"
+                         Grid.Column="0" />
+                <GridSplitter Grid.Column="0" Width="3"/>
+                <TextBlock Text="Texts" Style="{StaticResource Header}"
+                           Grid.Column="0"/>
+               
+                <ListBox ItemsSource="{Binding Links}"
+                         Grid.Column="1"/>
+                <GridSplitter Grid.Column="1" Width="3"/>
+                <TextBlock Text="Links" Style="{StaticResource Header}"
+                           Grid.Column="1"/>
+
+                <ListBox ItemsSource="{Binding Images}"
+                         Grid.Column="2">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Image Source="{Binding}"/>
+                                <TextBlock Text="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <GridSplitter Grid.Column="2" Width="3"/>
+                <TextBlock Text="Images" Style="{StaticResource Header}"
+                           Grid.Column="2"/>
+                
+                <ListBox ItemsSource="{Binding Audios}"
+                         Grid.Column="3"/>
+                <GridSplitter Grid.Column="3" Width="3"/>
+                <TextBlock Text="Audios" Style="{StaticResource Header}"
+                           Grid.Column="3"/>
+                
+                <ListBox ItemsSource="{Binding Videos}"
+                         Grid.Column="4"/>
+                <GridSplitter Grid.Column="4" Width="3"/>
+                <TextBlock Text="Videos" Style="{StaticResource Header}"
+                           Grid.Column="4"/>
+            </Grid>
         </Grid>
     </Grid>
 </Fluent:RibbonWindow>

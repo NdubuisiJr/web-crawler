@@ -1,22 +1,20 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using WebCrawler.Command;
-using WebCrawler.Core.Contract;
-using WebCrawler.Core.TagExtraction;
+using WebCrawler.Core;
 
 namespace WebCrawler {
     public class MainwindowViewModel : INotifyPropertyChanged {
         public MainwindowViewModel() {
-            Data = new ObservableCollection<string>();
-            _anchorExtractor = new AnchorTagExtractor();
+            Texts = new ObservableCollection<string>();
+            Links = new ObservableCollection<string>();
+            Images = new ObservableCollection<string>();
+            Audios = new ObservableCollection<string>();
+            Videos = new ObservableCollection<string>();
             Craw = new ActionCommand<object>(CrawAction);
             Cancel = new ActionCommand<object>(CancelAction);
         }
@@ -26,30 +24,60 @@ namespace WebCrawler {
         }
 
         private async void CrawAction(object obj) {
-            var progress = new Progress<string>(value => {
-                Data.Add(value);
+            var textProgress = new Progress<string>(value => {
+                Texts.Insert(0, value);
+            });
+            var linkProgress = new Progress<string>(value => {
+                Links.Insert(0, value);
+            });
+            var imageProgress = new Progress<string>(value => {
+                Images.Insert(0, value);
+            });
+            var audioProgress = new Progress<string>(value => {
+                Audios.Insert(0, value);
+            });
+            var videoProgress = new Progress<string>(value => {
+                Videos.Insert(0, value);
             });
             var countProgress = new Progress<int>(value => {
                 TagCount = $"Number of tags crawled = {value}";
             });
-            await Task.Run(() => Extract(progress, countProgress));
-
+            await Task.Run(() =>Extract(
+                textProgress,
+                countProgress,
+                linkProgress,
+                imageProgress,
+                audioProgress,
+                videoProgress
+            ));
         }
 
-        public async void Extract(IProgress<string> progress, IProgress<int> countProgress) {
+        public void Extract(
+                IProgress<string> textProgress,
+                IProgress<int> countProgress,
+                IProgress<string> linkProgress,
+                IProgress<string> imageProgress,
+                IProgress<string> audioProgress,
+                IProgress<string> videoProgress
+            ) {
+
             if (string.IsNullOrWhiteSpace(URL)) {
                 TagCount = "Error...\nInvalid or blank URL";
                 return;
             }
             _tokenSource = new CancellationTokenSource();
             try {
-                using (var httpClient = new HttpClient()) {
-                    var html = await httpClient.GetStringAsync(URL);
-                    var htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(html);
-                    var body = htmlDoc.DocumentNode.Descendants("body").First();
-                    ExtractData(body, progress, countProgress, _tokenSource.Token);
-                }
+                var crawingBot = new Bot();
+                crawingBot.Craw(
+                    URL, 
+                    textProgress,
+                    countProgress,
+                    linkProgress,
+                    imageProgress,
+                    audioProgress,
+                    videoProgress,
+                    _tokenSource.Token
+                 );
             }
             catch (OperationCanceledException e) {
                 TagCount = "Cancelled";
@@ -58,27 +86,6 @@ namespace WebCrawler {
                 _tokenSource.Dispose();
             }
         }
-
-        private void ExtractData(HtmlNode tag, IProgress<string> progress, IProgress<int> countProgress, CancellationToken token) {
-
-            if (token.IsCancellationRequested)
-                token.ThrowIfCancellationRequested();
-
-            foreach (var lowerTag in tag.Descendants()) {
-                ExtractData(lowerTag, progress, countProgress, token);
-            }
-
-            if (tag.Name.Contains("a")) {
-                progress.Report("EXTRACTOR = " + _anchorExtractor.Extract(tag));
-            };
-
-            Thread.Sleep(5);
-            if(!string.IsNullOrWhiteSpace(tag.InnerText))
-                progress.Report($"{tag.InnerText.Replace('\n', ' ')}");
-            countProgress.Report(count++);
-        }
-
-        private int count;
 
         private string _tagCount;
         public string TagCount {
@@ -101,13 +108,16 @@ namespace WebCrawler {
         public ActionCommand<object> Craw { get; set; }
         public ActionCommand<object> Cancel { get; set; }
 
-        public ObservableCollection<string> Data { get; protected set; }
+        public ObservableCollection<string> Texts { get; set; }
+        public ObservableCollection<string> Links { get; set; }
+        public ObservableCollection<string> Images { get; set; }
+        public ObservableCollection<string> Audios { get; set; }
+        public ObservableCollection<string> Videos { get; set; }
 
         private void RaisePropertyChanged([CallerMemberName] string propName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
 
-        private IExtractor _anchorExtractor;
         private CancellationTokenSource _tokenSource;
 
         public event PropertyChangedEventHandler PropertyChanged;
