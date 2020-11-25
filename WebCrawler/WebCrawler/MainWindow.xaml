@@ -9,13 +9,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Fluent:RibbonWindow.Resources>
-        <Style TargetType="TextBlock" x:Key="Header">
-            <Setter Property="Margin" Value="10,-20,0,0"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="15"/>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="20,5,20,0"/>
         </Style>
     </Fluent:RibbonWindow.Resources>
-    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -24,93 +21,68 @@
 
         <Fluent:Ribbon Grid.Row="0" Background="Red">
             <!--Backstage-->
-            <Fluent:Ribbon.Menu>
+            <!--<Fluent:Ribbon.Menu>
                 <Fluent:Backstage>
                     <Fluent:BackstageTabControl>
                         <Fluent:BackstageTabItem Header="New"/>
                         <Fluent:BackstageTabItem Header="Print"/>
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
-            </Fluent:Ribbon.Menu>
+            </Fluent:Ribbon.Menu>-->
 
             <!--Tabs-->
             <Fluent:RibbonTabItem Header="Home">
-                
-            </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="History">
-                
+                <Fluent:RibbonGroupBox Header="start" Margin="50,0,0,0">
+                    <Button Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding LaunchCommand}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Image Source="/Images/power-button.png"
+                               Height="35"/>
+                            <TextBlock Text="Launch" Grid.Row="1"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Button>
+                    <Button Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0" 
+                            Command="{Binding SaveCommand}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Image Source="/Images/save_icon-icons.com_53618.png"
+                               Height="35"/>
+                            <TextBlock Text="Save" Grid.Row="1"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+
+                    </Button>
+                    <Button Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0" 
+                            Command="{Binding SaveCommand}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Image Source="/Images/1486503771-book-books-education-library-reading-open-book-study_81275.png"
+                               Height="35"/>
+                            <TextBlock Text="Open" Grid.Row="1"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+
+                    </Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="0,10,0,0">
-                <TextBox Grid.Row="0" Width="500"
-                         Text="{Binding URL,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Row="0" Content="  Craw  "
-                        HorizontalAlignment="Right"
-                        Margin="10,0,0,0" 
-                        Command="{Binding Craw}"/>
-                <Button Grid.Row="0" Content="  Cancel  "
-                        HorizontalAlignment="Right"
-                        Margin="10,0,0,0" 
-                        Command="{Binding Cancel}"/>
-            </StackPanel>
-            <TextBlock Text="{Binding TagCount}"
-                       Grid.Row="1" HorizontalAlignment="Center"/>
-            <Grid Grid.Row="2" Margin="10,40,10,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding Texts}"
-                         Grid.Column="0" />
-                <GridSplitter Grid.Column="0" Width="3"/>
-                <TextBlock Text="Texts" Style="{StaticResource Header}"
-                           Grid.Column="0"/>
-               
-                <ListBox ItemsSource="{Binding Links}"
-                         Grid.Column="1"/>
-                <GridSplitter Grid.Column="1" Width="3"/>
-                <TextBlock Text="Links" Style="{StaticResource Header}"
-                           Grid.Column="1"/>
-
-                <ListBox ItemsSource="{Binding Images}"
-                         Grid.Column="2">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <Image Source="{Binding}"/>
-                                <TextBlock Text="{Binding}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <GridSplitter Grid.Column="2" Width="3"/>
-                <TextBlock Text="Images" Style="{StaticResource Header}"
-                           Grid.Column="2"/>
-                
-                <ListBox ItemsSource="{Binding Audios}"
-                         Grid.Column="3"/>
-                <GridSplitter Grid.Column="3" Width="3"/>
-                <TextBlock Text="Audios" Style="{StaticResource Header}"
-                           Grid.Column="3"/>
-                
-                <ListBox ItemsSource="{Binding Videos}"
-                         Grid.Column="4"/>
-                <GridSplitter Grid.Column="4" Width="3"/>
-                <TextBlock Text="Videos" Style="{StaticResource Header}"
-                           Grid.Column="4"/>
-            </Grid>
-        </Grid>
+        <ContentControl Grid.Row="1" Content="{Binding Content}"/>
     </Grid>
 </Fluent:RibbonWindow>

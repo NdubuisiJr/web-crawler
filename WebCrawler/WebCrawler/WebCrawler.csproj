@@ -73,6 +73,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Navigation\INavigator.cs" />
+    <Compile Include="Navigation\Navigator.cs" />
+    <Compile Include="ViewModels\CrawlerViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\CrawlerView.xaml.cs">
+      <DependentUpon>CrawlerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WelcomeView.xaml.cs">
+      <DependentUpon>WelcomeView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,6 +96,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\CrawlerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WelcomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainwindowViewModel.cs" />
@@ -120,6 +138,15 @@
       <Project>{7f8b23b1-cf0f-464f-8e4a-e0321a450832}</Project>
       <Name>WebCrawler.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\power-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\save_icon-icons.com_53618.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\1486503771-book-books-education-library-reading-open-book-study_81275.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
