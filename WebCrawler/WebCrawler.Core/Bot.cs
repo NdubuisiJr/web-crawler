@@ -18,7 +18,8 @@ namespace WebCrawler.Core {
             IProgress<string> imageProgress,
             IProgress<string> audioProgress,
             IProgress<string> videoProgress,
-            CancellationToken token) {
+            CancellationToken token,
+            Action<string> errorCallBack) {
 
             var domainRegex = new Regex("(http[s]*:\\/\\/|)([w]{3}\\.|)[a-zA-Z0-9]+\\.[a-zA-Z0-9]+[\\.a-zA-Z0-9]*");
             var match = domainRegex.Match(url);
@@ -28,11 +29,25 @@ namespace WebCrawler.Core {
 
             _extractors = new List<IExtractor> {
                 new AnchorTagExtractor(linkProgress, domain),
-                new ImageTagExtractor(imageProgress, domain)
+                new ImageTagExtractor(imageProgress, domain),
+                new AudioTagExtractor(audioProgress,domain),
+                new VideoTagExtractor(videoProgress,domain)
             };
 
             using (var httpClient = new HttpClient()) {
-                var html = await httpClient.GetStringAsync(url);
+                var html = "";
+                using (var response = await httpClient.GetAsync(url)) {
+                    if (response.IsSuccessStatusCode &&
+                        response.Content.Headers.ContentType.MediaType.Contains("html")) {
+                        html = await response.Content.ReadAsStringAsync();
+                    }
+                    else {
+                        errorCallBack.Invoke("Error, Content of url is not Html");
+                        return;
+                    }
+                }
+
+                //var html = await httpClient.GetStringAsync(url);
                 var htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(html);
                 var body = htmlDoc.DocumentNode.Descendants("body").First();
@@ -44,8 +59,10 @@ namespace WebCrawler.Core {
                     imageProgress,
                     audioProgress,
                     videoProgress,
-                    token
+                    token,
+                    errorCallBack
                 );
+                countProgress.Report(-888);
             }
         }
 
@@ -57,32 +74,43 @@ namespace WebCrawler.Core {
             IProgress<string> imageProgress,
             IProgress<string> audioProgress,
             IProgress<string> videoProgress,
-            CancellationToken token) {
+            CancellationToken token,
+            Action<string> callback) {
 
-            if (token.IsCancellationRequested)
-                token.ThrowIfCancellationRequested();
+            try {
+                foreach (var lowerTag in tag.Descendants()) {
+                    if (token.IsCancellationRequested)
+                        break;
+                    ExtractData(
+                        lowerTag,
+                        textProgress,
+                        countProgress,
+                        linkProgress,
+                        imageProgress,
+                        audioProgress,
+                        videoProgress,
+                        token,
+                        callback
+                  );
+                }
 
-            foreach (var lowerTag in tag.Descendants()) {
-                ExtractData(
-                    lowerTag,
-                    textProgress,
-                    countProgress,
-                    linkProgress,
-                    imageProgress,
-                    audioProgress,
-                    videoProgress,
-                    token
-              );
+                if (token.IsCancellationRequested) {
+                    token.ThrowIfCancellationRequested();
+                    return;
+                }
+
+                var extractor = _extractors.FirstOrDefault(x => x.CanExtract(tag.Name));
+                if (extractor != null)
+                    extractor.Extract(tag);
+
+                Thread.Sleep(15);
+                if (!string.IsNullOrWhiteSpace(tag.InnerText))
+                    textProgress.Report($"{tag.InnerText.Replace('\n', ' ')}");
+                countProgress.Report(count++);
             }
-
-            var extractor = _extractors.FirstOrDefault(x => x.CanExtract(tag.Name));
-            if (extractor != null)
-                extractor.Extract(tag);
-
-            Thread.Sleep(10);
-            if (!string.IsNullOrWhiteSpace(tag.InnerText))
-                textProgress.Report($"{tag.InnerText.Replace('\n', ' ')}");
-            countProgress.Report(count++);
+            catch (OperationCanceledException) {
+                countProgress.Report(-999);
+            }
         }
 
         private int count;
