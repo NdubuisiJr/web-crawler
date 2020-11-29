@@ -1,0 +1,35 @@
+﻿<Window x:Class="WebCrawler.Views.OpenView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WebCrawler.Views"
+        mc:Ignorable="d"
+         Height="600" WindowStartupLocation="CenterOwner"
+       WindowStyle="ToolWindow"
+        Width="600"
+        Title="Open">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Saved Sites" 
+                   HorizontalAlignment="Center"/>
+        <ListView x:Name="files" Grid.Row="1">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete" Name="Delete"
+                              Click="Delete_Click"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+        </ListView>
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <Button HorizontalAlignment="Center" Click="Button_Click"
+                Content="  Open  " Margin="10,0,0,0"/>
+            <Button IsCancel="True" Content="  Cancel  "
+                    Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

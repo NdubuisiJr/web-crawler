@@ -67,7 +67,7 @@
                     <Button Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="0" 
-                            Command="{Binding SaveCommand}">
+                            Command="{Binding OpenCommand}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>

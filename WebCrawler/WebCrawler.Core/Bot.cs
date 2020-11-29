@@ -34,35 +34,40 @@ namespace WebCrawler.Core {
                 new VideoTagExtractor(videoProgress,domain)
             };
 
-            using (var httpClient = new HttpClient()) {
-                var html = "";
-                using (var response = await httpClient.GetAsync(url)) {
-                    if (response.IsSuccessStatusCode &&
-                        response.Content.Headers.ContentType.MediaType.Contains("html")) {
-                        html = await response.Content.ReadAsStringAsync();
+            try {
+                using (var httpClient = new HttpClient()) {
+                    var html = "";
+                    using (var response = await httpClient.GetAsync(url)) {
+                        if (response.IsSuccessStatusCode &&
+                            response.Content.Headers.ContentType.MediaType.Contains("html")) {
+                            html = await response.Content.ReadAsStringAsync();
+                        }
+                        else {
+                            errorCallBack.Invoke("Error, Content of url is not Html");
+                            return;
+                        }
                     }
-                    else {
-                        errorCallBack.Invoke("Error, Content of url is not Html");
-                        return;
-                    }
-                }
 
-                //var html = await httpClient.GetStringAsync(url);
-                var htmlDoc = new HtmlDocument();
-                htmlDoc.LoadHtml(html);
-                var body = htmlDoc.DocumentNode.Descendants("body").First();
-                ExtractData(
-                    body,
-                    textProgress,
-                    countProgress,
-                    linkProgress,
-                    imageProgress,
-                    audioProgress,
-                    videoProgress,
-                    token,
-                    errorCallBack
-                );
-                countProgress.Report(-888);
+                    //var html = await httpClient.GetStringAsync(url);
+                    var htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(html);
+                    var body = htmlDoc.DocumentNode.Descendants("body").First();
+                    ExtractData(
+                        body,
+                        textProgress,
+                        countProgress,
+                        linkProgress,
+                        imageProgress,
+                        audioProgress,
+                        videoProgress,
+                        token,
+                        errorCallBack
+                    );
+                    countProgress.Report(-888);
+                }
+            }
+            catch{
+                countProgress.Report(-999);
             }
         }
 

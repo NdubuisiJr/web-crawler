@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using WebCrawler.Command;
 using WebCrawler.Core;
+using WebCrawler.Core.Models;
+using WebCrawler.Interfaces;
 
 namespace WebCrawler.ViewModels {
-    public class CrawlerViewModel : ViewModelBase {
+    public class CrawlerViewModel : ViewModelBase, ISaveOpen {
         public CrawlerViewModel() {
             InitializeCollections();
             Craw = new ActionCommand<object>(CrawAction, x => _canCraw);
@@ -24,6 +27,14 @@ namespace WebCrawler.ViewModels {
         }
 
         private async void CrawAction(object obj) {
+            if (string.IsNullOrWhiteSpace(URL)) {
+                TagCount = "Error...\nInvalid or blank URL";
+                _canCancel = false;
+                _canCraw = true;
+                Cancel.RaiseCanExecuteChanged();
+                Craw.RaiseCanExecuteChanged();
+                return;
+            }
             InitializeCollections();
             _canCraw = false;
             _canCancel = true;
@@ -84,15 +95,6 @@ namespace WebCrawler.ViewModels {
                 IProgress<string> audioProgress,
                 IProgress<string> videoProgress
             ) {
-
-            if (string.IsNullOrWhiteSpace(URL)) {
-                TagCount = "Error...\nInvalid or blank URL";
-                _canCancel = false;
-                _canCraw = true;
-                Cancel.RaiseCanExecuteChanged();
-                Craw.RaiseCanExecuteChanged();
-                return;
-            }
             _tokenSource = new CancellationTokenSource();
             var crawingBot = new Bot();
             crawingBot.Craw(
@@ -123,6 +125,28 @@ namespace WebCrawler.ViewModels {
             _canCraw = true;
             Cancel.RaiseCanExecuteChanged();
             Craw.RaiseCanExecuteChanged();
+        }
+
+        public Site Save() {
+            return new Site {
+                Audios = Audios.ToList(),
+                Images = Images.ToList(),
+                Links = Links.ToList(),
+                TagCount = TagCount,
+                Texts = Texts.ToList(),
+                Url = URL,
+                Videos = Videos.ToList(),
+            };
+        }
+
+        public void Open(Site data) {
+            Audios = new ObservableCollection<string>(data.Audios);
+            Images = new ObservableCollection<string>(data.Images);
+            Links = new ObservableCollection<string>(data.Links);
+            Texts = new ObservableCollection<string>(data.Texts);
+            Videos = new ObservableCollection<string>(data.Videos);
+            TagCount = data.TagCount;
+            URL = data.Url;
         }
 
         private string _tagCount;
