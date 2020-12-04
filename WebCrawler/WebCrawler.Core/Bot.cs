@@ -21,11 +21,17 @@ namespace WebCrawler.Core {
             CancellationToken token,
             Action<string> errorCallBack) {
 
-            var domainRegex = new Regex("(http[s]*:\\/\\/|)([w]{3}\\.|)[a-zA-Z0-9]+\\.[a-zA-Z0-9]+[\\.a-zA-Z0-9]*");
+            var domainRegex = new Regex("(http[s]*:\\/\\/|[w]{3}\\.)[a-zA-Z0-9]+\\.[a-zA-Z0-9]+[\\.a-zA-Z0-9]*");
             var match = domainRegex.Match(url);
             var domain = "";
-            if (match.Success)
+            if (match.Success) {
                 domain = match.Value;
+                if(match.Groups[1].Value == "www.") {
+                    var newDomain = domain.Replace("www.", "https://");
+                    url = url.Replace(domain, newDomain);
+                    domain = newDomain;
+                }
+            }
 
             _extractors = new List<IExtractor> {
                 new AnchorTagExtractor(linkProgress, domain),

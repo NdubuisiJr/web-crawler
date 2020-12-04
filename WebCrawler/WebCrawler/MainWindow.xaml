@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Fluent="urn:fluent-ribbon"
         WindowState="Maximized"
+        Icon="/Images/crawler.png"
+        IsIconVisible="True"
+        ShowInTaskbar="True"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Web Crawler" Height="450" Width="800">
     <Fluent:RibbonWindow.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="20,5,20,0"/>
