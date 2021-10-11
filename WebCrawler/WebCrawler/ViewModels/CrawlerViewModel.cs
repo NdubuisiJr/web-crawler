@@ -73,6 +73,13 @@ namespace WebCrawler.ViewModels {
                     Cancel.RaiseCanExecuteChanged();
                     Craw.RaiseCanExecuteChanged();
                 }
+                else if (value == -777) {
+                    TagCount = "An error occured. Ensure your url has https:// attached!";
+                    _canCraw = true;
+                    _canCancel = false;
+                    Cancel.RaiseCanExecuteChanged();
+                    Craw.RaiseCanExecuteChanged();
+                }
                 else {
                     TagCount = value == -999 || value == -888 ? "Cancelled" : $"Number of tags crawled = {value}";
                 }

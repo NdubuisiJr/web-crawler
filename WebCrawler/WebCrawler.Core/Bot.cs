@@ -72,8 +72,8 @@ namespace WebCrawler.Core {
                     countProgress.Report(-888);
                 }
             }
-            catch{
-                countProgress.Report(-999);
+            catch (Exception e) {
+                countProgress.Report(-777);
             }
         }
 
